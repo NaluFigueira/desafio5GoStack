@@ -1,21 +1,13 @@
-/* eslint-disable react/static-property-placement */
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import api from '../../services/api';
 import Container from '../../components/Container/index';
 
-import { IssueList, Loading, Owner } from './styles';
+import { IssueList, Loading, Owner, Select } from './styles';
 
 class Repository extends Component {
-  static propTypes = {
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        respository: PropTypes.string,
-      }),
-    }).isRequired,
-  };
-
   state = {
     repository: {},
     issues: [],
@@ -43,6 +35,26 @@ class Repository extends Component {
     });
   }
 
+  handleSelectChange = async e => {
+    const typeSelected = e.target.value;
+
+    const { repository } = this.state;
+
+    const issues = await api.get(
+      `/repos/${repository.owner.login}/${repository.name}/issues`,
+      {
+        params: {
+          state: typeSelected,
+          per_page: 5,
+        },
+      }
+    );
+
+    this.setState({
+      issues: issues.data,
+    });
+  };
+
   render() {
     const { repository, issues, loading } = this.state;
 
@@ -58,6 +70,15 @@ class Repository extends Component {
           <h1>{repository.name}</h1>
           <p>{repository.description}</p>
         </Owner>
+
+        <Select>
+          <span>Filtro: </span>
+          <select name="issueType" onChange={this.handleSelectChange}>
+            <option value="all">Todas</option>
+            <option value="open">Abertas</option>
+            <option value="closed">Fechadas</option>
+          </select>
+        </Select>
 
         <IssueList>
           {issues.map(issue => (
@@ -79,5 +100,13 @@ class Repository extends Component {
     );
   }
 }
+
+Repository.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      respository: PropTypes.string,
+    }),
+  }).isRequired,
+};
 
 export default Repository;
