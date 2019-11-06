@@ -11,9 +11,15 @@
 
 Dar continuidade a aplicação desenvolvida durante o módulo 5. A aplicação consiste no armazenamento e visualização de lista de repositórios do GitHub, o usuário tem acesso aos detalhes de cada repositório e de suas respecitivas issues.
 
+Para o desafio foi requisitado a adição de algumas funcionalidades:
+
+<ul>
+  <li> <strong> Captando erros: </strong> ao buscar um repositório inexistente, o input passa a ficar vermelho e uma mensagem de erro é exibida. </li>
+</ul>
+
 **Principais tecnologias**: React JS, Styled Components.
 
-**Ferramentas de edição e desenvolvimento**: Create React App, Eslint Prettier.
+**Ferramentas de edição e desenvolvimento**: Create React App, Eslint, Prettier.
 
 **Ferramentas de comunicação com a api**: axios.
 

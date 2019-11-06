@@ -73,3 +73,18 @@ export const List = styled.ul`
     }
   }
 `;
+
+export const Input = styled.input`
+  ${props =>
+    props.valid === false &&
+    css`
+      border: 2px solid red !important;
+    `}
+`;
+
+export const Error = styled.span`
+  color: red;
+  display: block;
+  margin: 5px 0;
+  font-weight: bold;
+`;

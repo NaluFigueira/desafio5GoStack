@@ -7,13 +7,14 @@ import api from '../../services/api';
 
 import Container from '../../components/Container/index';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, Input, Error } from './styles';
 
 export default class Main extends Component {
   state = {
     newRepo: '',
     repositories: [],
     loading: false,
+    valid: true,
   };
 
   componentDidMount() {
@@ -38,22 +39,28 @@ export default class Main extends Component {
 
     this.setState({ loading: true });
 
-    const { newRepo, repositories } = this.state;
-    const response = await api.get(`/repos/${newRepo}`);
+    try {
+      const { newRepo, repositories } = this.state;
 
-    const data = {
-      name: response.data.full_name,
-    };
+      const response = await api.get(`/repos/${newRepo}`);
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+      });
+    } catch (error) {
+      this.setState({ valid: false, newRepo: '' });
+    }
+
+    this.setState({ loading: false });
   };
 
   render() {
-    const { newRepo, loading, repositories } = this.state;
+    const { newRepo, loading, repositories, valid } = this.state;
 
     return (
       <Container>
@@ -63,9 +70,10 @@ export default class Main extends Component {
         </h1>
 
         <Form onSubmit={this.handleSubmit}>
-          <input
+          <Input
             type="text"
             placeholder="Adicionar repositório"
+            valid={!!valid}
             value={newRepo}
             onChange={this.handleInputChange}
           />
@@ -77,7 +85,7 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
-
+        {valid ? <></> : <Error>Repositório não encontrado!</Error>}
         <List>
           {repositories.map(repository => (
             <li key={repository.name}>
