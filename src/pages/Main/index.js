@@ -1,3 +1,4 @@
+/* eslint-disable no-throw-literal */
 import React, { Component } from 'react';
 
 import { Link } from 'react-router-dom';
@@ -15,6 +16,7 @@ export default class Main extends Component {
     repositories: [],
     loading: false,
     valid: true,
+    errorMessage: '',
   };
 
   componentDidMount() {
@@ -42,6 +44,10 @@ export default class Main extends Component {
     try {
       const { newRepo, repositories } = this.state;
 
+      const repoExists = repositories.find(repo => repo.name === newRepo);
+
+      if (repoExists) throw 'Repositório duplicado!';
+
       const response = await api.get(`/repos/${newRepo}`);
 
       const data = {
@@ -51,16 +57,23 @@ export default class Main extends Component {
       this.setState({
         repositories: [...repositories, data],
         newRepo: '',
+        errorMessage: '',
+        valid: true,
       });
     } catch (error) {
-      this.setState({ valid: false, newRepo: '' });
+      let message = '';
+      if (error !== 'Repositório duplicado!')
+        message = 'Repositório inexistente!';
+      else message = error;
+
+      this.setState({ valid: false, newRepo: '', errorMessage: message });
     }
 
     this.setState({ loading: false });
   };
 
   render() {
-    const { newRepo, loading, repositories, valid } = this.state;
+    const { newRepo, loading, repositories, valid, errorMessage } = this.state;
 
     return (
       <Container>
@@ -85,7 +98,7 @@ export default class Main extends Component {
             )}
           </SubmitButton>
         </Form>
-        {valid ? <></> : <Error>Repositório não encontrado!</Error>}
+        {valid ? <></> : <Error>{errorMessage}</Error>}
         <List>
           {repositories.map(repository => (
             <li key={repository.name}>
