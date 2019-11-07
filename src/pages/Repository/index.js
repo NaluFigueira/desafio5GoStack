@@ -2,16 +2,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import api from '../../services/api';
 import Container from '../../components/Container/index';
 
-import { IssueList, Loading, Owner, Select } from './styles';
+import { IssueList, Loading, Owner, Select, Pages } from './styles';
 
 class Repository extends Component {
   state = {
     repository: {},
     issues: [],
     loading: true,
+    type: 'all',
+    pageNumber: 1,
   };
 
   async componentDidMount() {
@@ -51,12 +54,33 @@ class Repository extends Component {
     );
 
     this.setState({
+      type: typeSelected,
+      issues: issues.data,
+    });
+  };
+
+  handlePageClick = async action => {
+    const { type, repository, pageNumber } = this.state;
+    const newPage = action === 'back' ? pageNumber - 1 : pageNumber + 1;
+    const issues = await api.get(
+      `/repos/${repository.owner.login}/${repository.name}/issues`,
+      {
+        params: {
+          state: type,
+          per_page: 5,
+          page: newPage,
+        },
+      }
+    );
+
+    this.setState({
+      pageNumber: newPage,
       issues: issues.data,
     });
   };
 
   render() {
-    const { repository, issues, loading } = this.state;
+    const { repository, issues, loading, pageNumber } = this.state;
 
     if (loading) {
       return <Loading>Carregando</Loading>;
@@ -96,6 +120,18 @@ class Repository extends Component {
             </li>
           ))}
         </IssueList>
+        <Pages>
+          {pageNumber !== 1 ? (
+            <button type="button" onClick={() => this.handlePageClick('back')}>
+              <FaChevronLeft /> Anterior
+            </button>
+          ) : (
+            <div />
+          )}
+          <button type="button" onClick={() => this.handlePageClick('next')}>
+            Próxima <FaChevronRight />
+          </button>
+        </Pages>
       </Container>
     );
   }

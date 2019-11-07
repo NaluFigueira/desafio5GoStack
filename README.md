@@ -17,6 +17,7 @@ Para o desafio foi requisitado a adição de algumas funcionalidades:
   <li> <strong> Captando erros: </strong> ao buscar um repositório inexistente, o input passa a ficar vermelho e uma mensagem de erro é exibida. </li>
   <li> <strong> Repositório duplicado: </strong> ao buscar um repositório já adicionado, o input passa a ficar vermelho e uma mensagem de erro é exibida. </li>
   <li> <strong> Filtro de estado: </strong> o usuário pode filtrar as issues que aparecem de acordo com seu estado (aberto, fechado, todas). </li>
+  <li> <strong> Paginação: </strong> as issues são distribúidas em páginas, cada uma com 5 issues. O usuário pode se redirecionar entre páginas.</li>
 </ul>
 
 **Principais tecnologias**: React JS, Styled Components.

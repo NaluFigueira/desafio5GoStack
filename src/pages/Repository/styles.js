@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Loading = styled.div`
   color: #fff;
@@ -118,5 +118,21 @@ export const Select = styled.div`
     border: 1px solid #7159c1;
     color: #7159c1;
     padding: 5px;
+  }
+`;
+
+export const Pages = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  margin-top: 15px;
+
+  button {
+    display: flex;
+    align-items: center;
+    border: 1px solid #7159c1;
+    background-color: #7159c1;
+    padding: 5px;
+    color: white;
   }
 `;
